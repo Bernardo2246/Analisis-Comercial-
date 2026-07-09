@@ -1,0 +1,14 @@
+{
+ "corte": "2026-07-01",
+ "fuente": "export de tareas Clientify (opps con seguimiento) + Excel de ventas",
+ "ventas_cerradas": 164,
+ "monto_vendido": 11050567.62,
+ "ticket_prom": 67381.51,
+ "crm_opps_total": 1464,
+ "crm_ganadas": 139,
+ "crm_perdidas": 1145,
+ "opps_abiertas": 128,
+ "pct_cierre_crm": 0.0949,
+ "pipeline_abierto_bruto": 17295218.75,
+ "nota_pipeline": "suma de importes de 128 opps Abiertas del export (+10 vencidas por $2,490,369)"
+}

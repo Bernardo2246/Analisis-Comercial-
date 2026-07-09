@@ -1,0 +1,15 @@
+{
+ "corte": "2026-05-15",
+ "fuente": "git a17996d (deck original publicado a mediados de mayo 2026)",
+ "ventas_cerradas": 147,
+ "monto_vendido": 10045483.1,
+ "ticket_prom": 68336.62,
+ "crm_opps_total": 1320,
+ "crm_ganadas": 137,
+ "crm_perdidas": 1069,
+ "opps_abiertas": 110,
+ "pct_cierre_crm": 0.1038,
+ "pipeline_abierto_bruto": 13990000.0,
+ "pipeline_abierto_ponderado": 7730000.0,
+ "nota_pipeline": "valores del deck de mayo ($13.99M bruto / $7.73M ponderado, 110 opps)"
+}

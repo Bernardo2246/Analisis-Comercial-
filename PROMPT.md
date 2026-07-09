@@ -27,12 +27,20 @@ QUÉ HACER:
 5. Actualiza el forecast con los datos reales del trimestre que ya cerró (deja de ser
    proyección, es real).
 6. Paleta de color (Integra Cimentaciones):
-   - Fondo oscuro: #2A3540
-   - Verde lima: #A8CB62
-   - Verde acento: #96BC4B
+   - Fondo oscuro: #263139
+   - Verde lima: #A8CB61
+   - Verde logo: #96BC4B
    - Ámbar/CTA: #F5BD41
+   (definitiva, medida con color picker del sitio real — ronda 3, jul-2026)
    - Texto sobre oscuro: #FFFFFF
 7. Al terminar: commit + push al repo, confírmame la URL actualizada.
+
+
+SNAPSHOTS DE PIPELINE (práctica instituida jul-2026):
+Con cada actualización trimestral se genera snapshots/pipeline_YYYY-MM.json con las
+métricas clave del corte (ventas cerradas, monto vendido, opps abiertas, pipeline bruto,
+% cierre CRM). La diapositiva "Evolución del Pipeline" compara el snapshot nuevo contra
+el anterior leyendo de estos archivos — no del historial de git.
 
 REUTILIZABLE: cada trimestre solo cambio el rango de fechas del punto 1 y adjunto el .xlsx
 de ventas actualizado — el baseline de funnel se refresca solo si mando un nuevo export
