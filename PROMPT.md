@@ -26,13 +26,10 @@ QUÉ HACER:
    tasa de conversión real lead→cierre, no solo revenue de lo ganado.
 5. Actualiza el forecast con los datos reales del trimestre que ya cerró (deja de ser
    proyección, es real).
-6. Paleta de color (Integra Cimentaciones):
-   - Fondo oscuro: #263139
-   - Verde lima: #A8CB61
-   - Verde logo: #96BC4B
-   - Ámbar/CTA: #F5BD41
-   (definitiva, medida con color picker del sitio real — ronda 3, jul-2026)
-   - Texto sobre oscuro: #FFFFFF
+6. Diseño visual: usar el tema ORIGINAL del deck (navy #0A1929 / dorado #F5A623 y
+   gráficas en familia azul/dorado) — decisión de ronda 5 (jul-2026), que revirtió el
+   experimento de paleta del sitio de Integra. NO reaplicar la paleta web del sitio.
+   Los logos de Integra (portada, sidebar y esquina de cada slide) se mantienen.
 7. Al terminar: commit + push al repo, confírmame la URL actualizada.
 
 
