@@ -1,0 +1,119 @@
+{
+ "fuente": "Clientify — export de tareas y oportunidades, corte 2026-07-01 (extraído del deck publicado, commit 88d2866)",
+ "funnel_12m": {
+  "total": 1464,
+  "lost_pct": 0.782,
+  "won_pct": 0.095,
+  "open": 155,
+  "vencidas": 25,
+  "won": 139,
+  "lost": 1145,
+  "perd_contacto_pct": 0.74
+ },
+ "funnel_2026_h1": {
+  "opps": 403,
+  "ganadas": 47,
+  "perdidas": 226,
+  "abiertas": 124,
+  "vencidas": 6,
+  "won_pct": 0.1166,
+  "lost_pct": 0.5608,
+  "fuente": "export de tareas Clientify — oportunidades creadas en 2026 con seguimiento registrado"
+ },
+ "actividades_2026_h1": {
+  "total": 1635,
+  "tipos": [
+   {
+    "t": "Llamada",
+    "n": 1518
+   },
+   {
+    "t": "Correo",
+    "n": 47
+   },
+   {
+    "t": "Reunión/Videollamada",
+    "n": 32
+   },
+   {
+    "t": "Tarea/Otro",
+    "n": 38
+   }
+  ],
+  "por_mes": [
+   {
+    "m": 1,
+    "Llamada": 271,
+    "Correo": 2,
+    "Reunión/Videollamada": 6,
+    "Tarea/Otro": 1
+   },
+   {
+    "m": 2,
+    "Llamada": 275,
+    "Correo": 10,
+    "Reunión/Videollamada": 3,
+    "Tarea/Otro": 13
+   },
+   {
+    "m": 3,
+    "Llamada": 249,
+    "Correo": 6,
+    "Reunión/Videollamada": 5,
+    "Tarea/Otro": 3
+   },
+   {
+    "m": 4,
+    "Llamada": 233,
+    "Correo": 10,
+    "Reunión/Videollamada": 4,
+    "Tarea/Otro": 20
+   },
+   {
+    "m": 5,
+    "Llamada": 245,
+    "Correo": 13,
+    "Reunión/Videollamada": 4,
+    "Tarea/Otro": 0
+   },
+   {
+    "m": 6,
+    "Llamada": 245,
+    "Correo": 6,
+    "Reunión/Videollamada": 10,
+    "Tarea/Otro": 1
+   }
+  ],
+  "dias_activos": 146,
+  "act_dia_activo": 11.2,
+  "opps_creadas": 403,
+  "act_por_opp": 3.3,
+  "act_perdidas": 3.7,
+  "act_ganadas": 2.7,
+  "n_perdidas": 226,
+  "n_ganadas": 47
+ },
+ "act_hist": {
+  "buckets": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5+"
+  ],
+  "ganadas": [
+   13,
+   13,
+   9,
+   5,
+   7
+  ],
+  "perdidas": [
+   25,
+   32,
+   40,
+   62,
+   67
+  ]
+ }
+}

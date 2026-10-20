@@ -1,0 +1,397 @@
+{
+ "fuente": "OpenStreetMap Nominatim — cabecera municipal; revisado con Bernardo 2026-10-19",
+ "coords": {
+  "Acapulco de Juárez, Guerrero": {
+   "lat": 16.868,
+   "lon": -99.894
+  },
+  "Acatepec, Guerrero": {
+   "lat": 17.1774,
+   "lon": -99.055
+  },
+  "Actopan, Hidalgo": {
+   "lat": 20.3089,
+   "lon": -98.8757
+  },
+  "Almoloya de Juárez, Estado de México": {
+   "lat": 19.3972,
+   "lon": -99.8216
+  },
+  "Apaxco, Estado de México": {
+   "lat": 19.9807,
+   "lon": -99.1518
+  },
+  "Arandas, Jalisco": {
+   "lat": 20.7493,
+   "lon": -102.3143
+  },
+  "Atitalaquia, Hidalgo": {
+   "lat": 20.0597,
+   "lon": -99.2133
+  },
+  "Atizapán de Zaragoza, Estado de México": {
+   "lat": 19.564,
+   "lon": -99.2795
+  },
+  "Atlacomulco, Estado de México": {
+   "lat": 19.8159,
+   "lon": -99.8681
+  },
+  "Atotonilco de Tula, Hidalgo": {
+   "lat": 19.9603,
+   "lon": -99.2369
+  },
+  "Azcapotzalco, Ciudad de México": {
+   "lat": 19.4839,
+   "lon": -99.1844
+  },
+  "Benito Juárez, Ciudad de México": {
+   "lat": 19.3719,
+   "lon": -99.1577
+  },
+  "Catorce, San Luis Potosí": {
+   "lat": 23.6439,
+   "lon": -101.0551
+  },
+  "Celaya, Guanajuato": {
+   "lat": 20.5223,
+   "lon": -100.8308
+  },
+  "Chalco, Estado de México": {
+   "lat": 19.2383,
+   "lon": -98.8189
+  },
+  "Chapantongo, Hidalgo": {
+   "lat": 20.2441,
+   "lon": -99.5195
+  },
+  "Chilcuautla, Hidalgo": {
+   "lat": 20.3255,
+   "lon": -99.2611
+  },
+  "Chilpancingo de los Bravo, Guerrero": {
+   "lat": 17.5542,
+   "lon": -99.5048
+  },
+  "Chimalhuacán, Estado de México": {
+   "lat": 19.4178,
+   "lon": -98.9575
+  },
+  "Coacalco de Berriozábal, Estado de México": {
+   "lat": 19.6359,
+   "lon": -99.0949
+  },
+  "Concordia, Sinaloa": {
+   "lat": 23.4211,
+   "lon": -105.9561
+  },
+  "Cuajimalpa de Morelos, Ciudad de México": {
+   "lat": 19.3572,
+   "lon": -99.2996
+  },
+  "Cuauhtémoc, Ciudad de México": {
+   "lat": 19.4326,
+   "lon": -99.1332
+  },
+  "Cuautitlán, Estado de México": {
+   "lat": 19.7055,
+   "lon": -99.1666
+  },
+  "Ecatepec de Morelos, Estado de México": {
+   "lat": 19.5994,
+   "lon": -99.0487
+  },
+  "El Marqués, Querétaro": {
+   "lat": 20.7351,
+   "lon": -100.2836
+  },
+  "Fresnillo, Zacatecas": {
+   "lat": 23.1811,
+   "lon": -102.8729
+  },
+  "Gustavo A. Madero, Ciudad de México": {
+   "lat": 19.4828,
+   "lon": -99.1134
+  },
+  "Gustavo Díaz Ordaz, Tamaulipas": {
+   "lat": 26.1381,
+   "lon": -98.6419
+  },
+  "Huehuetoca, Estado de México": {
+   "lat": 19.8222,
+   "lon": -99.2709
+  },
+  "Huichapan, Hidalgo": {
+   "lat": 20.3906,
+   "lon": -99.6822
+  },
+  "Huixquilucan, Estado de México": {
+   "lat": 19.3702,
+   "lon": -99.3582
+  },
+  "Irapuato, Guanajuato": {
+   "lat": 20.6759,
+   "lon": -101.3521
+  },
+  "Ixmiquilpan, Hidalgo": {
+   "lat": 20.4819,
+   "lon": -99.2181
+  },
+  "Ixtapan de la Sal, Estado de México": {
+   "lat": 18.841,
+   "lon": -99.6929
+  },
+  "Iztacalco, Ciudad de México": {
+   "lat": 19.3957,
+   "lon": -99.0975
+  },
+  "Iztapalapa, Ciudad de México": {
+   "lat": 19.3589,
+   "lon": -99.0925
+  },
+  "Jilotzingo, Estado de México": {
+   "lat": 19.4978,
+   "lon": -99.3956
+  },
+  "Jiutepec, Morelos": {
+   "lat": 18.8864,
+   "lon": -99.1701
+  },
+  "La Paz, Estado de México": {
+   "lat": 19.3638,
+   "lon": -98.9463
+  },
+  "León, Guanajuato": {
+   "lat": 21.122,
+   "lon": -101.683
+  },
+  "Lázaro Cárdenas, Michoacán": {
+   "lat": 17.9595,
+   "lon": -102.1987
+  },
+  "Malinalco, Estado de México": {
+   "lat": 18.8938,
+   "lon": -99.4942
+  },
+  "Melchor Ocampo, Estado de México": {
+   "lat": 19.7081,
+   "lon": -99.1317
+  },
+  "Metepec, Hidalgo": {
+   "lat": 20.2587,
+   "lon": -98.3447
+  },
+  "Mexicali, Baja California": {
+   "lat": 32.6393,
+   "lon": -115.4747
+  },
+  "Miguel Hidalgo, Ciudad de México": {
+   "lat": 19.4071,
+   "lon": -99.1906
+  },
+  "Mineral del Monte, Hidalgo": {
+   "lat": 20.1477,
+   "lon": -98.6743
+  },
+  "Mixquiahuala de Juárez, Hidalgo": {
+   "lat": 20.252,
+   "lon": -99.2975
+  },
+  "Monterrey, Nuevo León": {
+   "lat": 25.6802,
+   "lon": -100.3153
+  },
+  "Naucalpan de Juárez, Estado de México": {
+   "lat": 19.4788,
+   "lon": -99.2328
+  },
+  "Nezahualcóyotl, Estado de México": {
+   "lat": 19.4325,
+   "lon": -99.0352
+  },
+  "Nicolás Romero, Estado de México": {
+   "lat": 19.6342,
+   "lon": -99.3696
+  },
+  "Nopala de Villagrán, Hidalgo": {
+   "lat": 20.2329,
+   "lon": -99.6747
+  },
+  "Oaxaca de Juárez, Oaxaca": {
+   "lat": 17.0966,
+   "lon": -96.7208
+  },
+  "Pachuca de Soto, Hidalgo": {
+   "lat": 20.1045,
+   "lon": -98.7889
+  },
+  "Progreso de Obregón, Hidalgo": {
+   "lat": 20.3045,
+   "lon": -99.1809
+  },
+  "Puebla, Puebla": {
+   "lat": 19.0438,
+   "lon": -98.1982
+  },
+  "Pueblo Nuevo, Durango": {
+   "lat": 23.4545,
+   "lon": -105.2777
+  },
+  "Querétaro, Querétaro": {
+   "lat": 20.5923,
+   "lon": -100.3917
+  },
+  "San José Iturbide, Guanajuato": {
+   "lat": 21.0013,
+   "lon": -100.3845
+  },
+  "San Pedro Mixtepec, Oaxaca": {
+   "lat": 15.9462,
+   "lon": -97.0708
+  },
+  "Silao de la Victoria, Guanajuato": {
+   "lat": 20.9763,
+   "lon": -101.4496
+  },
+  "Tamiahua, Veracruz": {
+   "lat": 21.3199,
+   "lon": -97.4969
+  },
+  "Tampico, Tamaulipas": {
+   "lat": 22.2701,
+   "lon": -97.8949
+  },
+  "Tasquillo, Hidalgo": {
+   "lat": 20.5307,
+   "lon": -99.3676
+  },
+  "Tecomán, Colima": {
+   "lat": 18.9031,
+   "lon": -103.8463
+  },
+  "Tecozautla, Hidalgo": {
+   "lat": 20.5397,
+   "lon": -99.6526
+  },
+  "Tecámac, Estado de México": {
+   "lat": 19.7115,
+   "lon": -98.9684
+  },
+  "Temascaltepec, Estado de México": {
+   "lat": 19.1076,
+   "lon": -99.9488
+  },
+  "Teotihuacán, Estado de México": {
+   "lat": 19.6934,
+   "lon": -98.8831
+  },
+  "Tepeapulco, Hidalgo": {
+   "lat": 19.8063,
+   "lon": -98.506
+  },
+  "Tepeji del Río de Ocampo, Hidalgo": {
+   "lat": 19.8937,
+   "lon": -99.3487
+  },
+  "Tepetlaoxtoc, Estado de México": {
+   "lat": 19.5492,
+   "lon": -98.7516
+  },
+  "Texcoco, Estado de México": {
+   "lat": 19.4756,
+   "lon": -98.8554
+  },
+  "Tezontepec de Aldama, Hidalgo": {
+   "lat": 20.174,
+   "lon": -99.2887
+  },
+  "Tezoyuca, Estado de México": {
+   "lat": 19.5902,
+   "lon": -98.9079
+  },
+  "Tizayuca, Hidalgo": {
+   "lat": 19.8526,
+   "lon": -98.9593
+  },
+  "Tlalnepantla de Baz, Estado de México": {
+   "lat": 19.5465,
+   "lon": -99.1899
+  },
+  "Tlalpan, Ciudad de México": {
+   "lat": 19.2881,
+   "lon": -99.167
+  },
+  "Tlaltizapán de Zapata, Morelos": {
+   "lat": 18.7045,
+   "lon": -99.1419
+  },
+  "Tlapacoyan, Veracruz": {
+   "lat": 20.0221,
+   "lon": -97.1567
+  },
+  "Tláhuac, Ciudad de México": {
+   "lat": 19.2704,
+   "lon": -99.0047
+  },
+  "Toluca, Estado de México": {
+   "lat": 19.2925,
+   "lon": -99.6569
+  },
+  "Tula de Allende, Hidalgo": {
+   "lat": 20.0489,
+   "lon": -99.373
+  },
+  "Tultitlán, Estado de México": {
+   "lat": 19.617,
+   "lon": -99.1593
+  },
+  "Tuxpan, Veracruz": {
+   "lat": 20.9298,
+   "lon": -97.3937
+  },
+  "Valle de Chalco Solidaridad, Estado de México": {
+   "lat": 19.2822,
+   "lon": -98.9416
+  },
+  "Venustiano Carranza, Ciudad de México": {
+   "lat": 19.4192,
+   "lon": -99.1135
+  },
+  "Veracruz, Veracruz": {
+   "lat": 19.2003,
+   "lon": -96.1384
+  },
+  "Villa de Reyes, San Luis Potosí": {
+   "lat": 21.8348,
+   "lon": -101.0042
+  },
+  "Villa de Tezontepec, Hidalgo": {
+   "lat": 19.9144,
+   "lon": -98.8003
+  },
+  "Xalatlaco, Estado de México": {
+   "lat": 19.1844,
+   "lon": -99.4146
+  },
+  "Xicotepec, Puebla": {
+   "lat": 20.2767,
+   "lon": -97.9607
+  },
+  "Zacatecas, Zacatecas": {
+   "lat": 22.7754,
+   "lon": -102.5723
+  },
+  "Zacatepec, Morelos": {
+   "lat": 18.6506,
+   "lon": -99.2031
+  },
+  "Zumpango, Estado de México": {
+   "lat": 19.8129,
+   "lon": -99.0818
+  },
+  "Álvaro Obregón, Ciudad de México": {
+   "lat": 19.3907,
+   "lon": -99.1952
+  }
+ }
+}

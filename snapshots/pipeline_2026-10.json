@@ -1,0 +1,15 @@
+{
+ "corte": "2026-10-14",
+ "fuente": "Tablero Master Metrics de SRM sobre Go High Level (transcripción en ghl/raw/mastermetrics_Q3-2026.md) (PRELIMINAR — se reemplaza por la exportación vía API cuando haya acceso Admin a GHL) + Excel de ventas",
+ "alcance_crm": "SOLO oportunidades creadas jul–sep 2026 (no comparable 1:1 con el snapshot 2026-07)",
+ "ventas_cerradas": 233,
+ "monto_vendido": 15855823.17,
+ "ticket_prom": 68050.74,
+ "crm_opps_total": 200,
+ "crm_ganadas": 19,
+ "opps_abiertas": 87,
+ "pct_cierre_crm": 0.095,
+ "pipeline_abierto_bruto": 15037131,
+ "valor_gestionado": 23721191,
+ "nota_pipeline": "Master Metrics; se reemplaza con la exportación GHL (ghl/summarize.py --write)"
+}

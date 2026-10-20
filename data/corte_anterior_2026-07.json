@@ -1,0 +1,7 @@
+{
+ "fuente": "Métricas del deck publicado en jul-2026 (commit 88d2866, DATA.metrics)",
+ "corte": "2026-07-01",
+ "cobranza_2026": {"pct_cobrado": 0.843, "cobrado": 5584636.21, "pendiente": 1039890.52, "periodo": "ene–jun 2026"},
+ "ventas_mes_2026_h1_publicado": 15.8,
+ "nota": "Valores tal como se publicaron; el Excel nuevo corrigió el 1er semestre (94 ventas / $6,608,013.73)"
+}

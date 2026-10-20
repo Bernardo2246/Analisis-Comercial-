@@ -1,1 +1,21 @@
 .DS_Store
+
+# Go High Level: credenciales y extracción cruda (datos personales)
+ghl/.env
+ghl/raw/
+__pycache__/
+
+# Reporte extenso: pipeline, clientes y datos internos — NO se publica
+reporte/reporte.html
+reporte/*.pdf
+reporte/data_interno.js
+
+# Excel de ventas: cobranza y datos por cliente — no se publica
+data/*.xlsx
+
+# Capturas de verificación (locales)
+capturas_q3/
+
+# Datos internos de GHL y prompt de trabajo del trimestre (contienen hallazgos solo-PDF)
+data/ghl_mastermetrics_*.json
+PROMPT_Q3-2026.md
