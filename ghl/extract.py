@@ -136,7 +136,12 @@ def conversations(c, a):
 
 
 def messages(c, a, convs=None):
-    """Mensajes desde --since. Vía principal: export por location; respaldo: por conversación."""
+    """Mensajes desde --since, leídos conversación por conversación.
+
+    Nota (2026-10-20): el export masivo /conversations/messages/export solo devolvió WhatsApp y
+    llamadas de octubre aunque hay conversaciones desde julio; la lectura por conversación sí trae
+    el historial completo. Por eso es la vía principal.
+    """
     def slim(m):
         s = {k: m.get(k) for k in MSG_KEEP}
         meta = m.get("meta") or {}
@@ -144,34 +149,16 @@ def messages(c, a, convs=None):
         s["callDuration"], s["callStatus"] = call.get("duration") or meta.get("callDuration"), call.get("status") or meta.get("callStatus")
         return s
 
-    since_iso = dt.datetime.combine(a.since, dt.time(), TZ_OFFSET).isoformat()
-    out = []
-    try:
-        for channel in (None, "Email"):  # sin channel = todo menos email
-            params = {"locationId": c.location_id, "limit": 1000, "startDate": since_iso,
-                      "sortBy": "createdAt", "sortOrder": "asc", "channel": channel}
-            while True:
-                r = c.get("/conversations/messages/export", params, version="v3")
-                out += [slim(m) for m in r.get("messages", [])]
-                if not r.get("nextCursor"):
-                    break
-                params["cursor"] = r["nextCursor"]
-        return out
-    except GHLError as e:
-        if e.status not in (400, 404, 405, 422):
-            raise
-        print(f"  export no disponible ({e.status}); respaldo por conversación", file=sys.stderr)
-
-    out = []
+    out, since = [], a.since.isoformat()
     for conv in convs or []:
-        if (conv.get("lastMessageDate") or 0) < _ms(a.since):
+        if (conv.get("lastMessageDate") or 0) < _ms(a.since) or conv.get("lastMessageType") == "TYPE_NO_SHOW":
             continue
         params = {"limit": 100}
         while True:
-            r = c.get(f"/conversations/{conv['id']}/messages", params).get("messages", {})
+            r = c.get(f"/conversations/{conv['id']}/messages", params, version="2021-04-15").get("messages", {})
             batch = r.get("messages", [])
-            out += [slim(m) for m in batch if (m.get("dateAdded") or "") >= a.since.isoformat()]
-            if not r.get("nextPage") or not batch:
+            out += [slim(m) for m in batch if (m.get("dateAdded") or "") >= since]
+            if not r.get("nextPage") or not batch or min(m.get("dateAdded") or "" for m in batch) < since:
                 break
             params["lastMessageId"] = r.get("lastMessageId")
     return out

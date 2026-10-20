@@ -24,6 +24,9 @@ RAW = HERE / "raw"
 SNAP = HERE.parent / "snapshots"
 TZ = dt.timezone(dt.timedelta(hours=-6))
 STALE_DAYS = 30
+PUBLICO = ("corte", "fuente", "ventas_cerradas", "monto_vendido", "ticket_prom", "crm_opps_total", "crm_ganadas",
+           "crm_perdidas", "opps_abiertas", "pct_cierre_crm", "pipeline_abierto_bruto", "contactos_total",
+           "actividades_por_mes", "nativas", "migradas_clientify")
 
 MSG_TYPE = {  # messageType de GHL → categoría del reporte
     "TYPE_CALL": "llamadas", "CALL": "llamadas",
@@ -85,12 +88,13 @@ def summarize(d, corte):
         etapas[k]["opps"] += 1
         etapas[k]["valor"] += val(o)
 
-    motivos = C.Counter((o.get("lostReason") or o.get("lostReasonId") or "sin motivo")
+    cat_path = HERE / "lost_reasons.json"  # catálogo id→nombre (la API no lo expone)
+    motivos_cat = json.loads(cat_path.read_text())["motivos"] if cat_path.exists() else {}
+    motivos = C.Counter(motivos_cat.get(o.get("lostReasonId"), o.get("lostReasonId")) or "sin motivo"
                         for o in opps if o.get("status") == "lost")
 
     cutoff = dt.datetime.combine(corte, dt.time(), TZ) - dt.timedelta(days=STALE_DAYS)
-    stale = [o for o in open_
-             if (parse_ts(o.get("lastStageChangeAt") or o.get("updatedAt") or o.get("createdAt")) or cutoff) < cutoff]
+    stale = None  # se calcula abajo con dias() para usar una sola regla (≥ STALE_DAYS días sin cambio de etapa)
 
     act = C.defaultdict(C.Counter)
     por_usuario = C.defaultdict(C.Counter)
@@ -105,6 +109,7 @@ def summarize(d, corte):
             por_usuario[users.get(m.get("userId"), "sistema/automatización")][cat] += 1
     for t in tasks:
         act[month(t.get("dateAdded") or t.get("createdAt"))]["tareas_creadas"] += 1
+        por_usuario[users.get(t.get("assignedTo"), "sin asignar")]["tareas"] += 1
         if t.get("completed"):
             act[month(t.get("completedAt") or t.get("updatedAt") or t.get("dueDate"))]["tareas_completadas"] += 1
     for n in notes:
@@ -117,6 +122,45 @@ def summarize(d, corte):
         if o.get("status") == "won":
             act[month(o.get("lastStatusChangeAt") or o.get("updatedAt"))]["opps_ganadas"] += 1
     act.pop(None, None)
+
+    # Migración Clientify → GHL (jul-2026) fue parcial: las opps migradas llegaron con createdAt del día de
+    # la migración y casi todas como "lost/Otro". Se reportan como histórico y se excluyen de las métricas
+    # del periodo (decisión de Bernardo, 2026-10-20).
+    migrada = lambda o: (o.get("source") or "").strip().lower() == "clientify"
+    nat = [o for o in opps if not migrada(o)]
+    mig = [o for o in opps if migrada(o)]
+    corte_dt = dt.datetime.combine(corte, dt.time(), TZ)
+    dias = lambda o: (corte_dt - (parse_ts(o.get("lastStageChangeAt") or o.get("updatedAt") or o.get("createdAt")) or corte_dt)).days
+
+    stale = [o for o in open_ if dias(o) >= STALE_DAYS]
+    estanc_etapa = []
+    for k, v in sorted(etapas.items(), key=lambda kv: kv[0][2]):
+        ds = [dias(o) for o in open_ if stage_name.get(o.get("pipelineStageId")) == k[1]]
+        estanc_etapa.append({"etapa": k[1], "opps": v["opps"], "valor": round(v["valor"], 2),
+                             "dias_prom": round(sum(ds) / len(ds), 1) if ds else None,
+                             "dias_mediana": sorted(ds)[len(ds) // 2] if ds else None,
+                             "mas_30d": sum(x >= STALE_DAYS for x in ds)})
+
+    cohorte = {}
+    for o in nat:
+        m = month(o.get("createdAt"))
+        c = cohorte.setdefault(m, {"opps": 0, "valor": 0.0, "open": 0, "won": 0, "lost": 0, "valor_won": 0.0})
+        c["opps"] += 1
+        c["valor"] += val(o)
+        c[o.get("status") if o.get("status") in ("open", "won", "lost") else "open"] += 1
+        if o.get("status") == "won":
+            c["valor_won"] += val(o)
+    cohorte = {k: {kk: round(vv, 2) if isinstance(vv, float) else vv for kk, vv in v.items()} for k, v in sorted(cohorte.items()) if k}
+
+    motivo = lambda o: motivos_cat.get(o.get("lostReasonId"), o.get("lostReasonId")) or "sin motivo"
+    motivos_nat = C.Counter(motivo(o) for o in nat if o.get("status") == "lost")
+    mig_st = C.Counter(o.get("status") for o in mig)
+
+    calls = [m for m in msgs if m.get("messageType") == "TYPE_CALL"]
+    salientes_usuario_mes = C.defaultdict(C.Counter)
+    for m in msgs:
+        if m.get("direction") == "outbound" and MSG_TYPE.get(m.get("messageType")) in ("whatsapp", "llamadas", "email"):
+            salientes_usuario_mes[month(m.get("dateAdded"))][users.get(m.get("userId"), "sistema/automatización")] += 1
 
     fuente_opp = C.Counter((o.get("source") or "sin fuente").strip().upper() for o in opps)
     tag_cont = C.Counter(t.strip().lower() for ct in contacts for t in (ct.get("tags") or []))
@@ -147,6 +191,14 @@ def summarize(d, corte):
         "actividades_por_usuario": {k: dict(v) for k, v in por_usuario.items()},
         "nota_actividades": "GHL desde jul-2026 (migración: jul inicio, ago parcial, sep completa). "
                             "Recompras y recomendados entran fuera del CRM.",
+        "estancamiento_por_etapa": estanc_etapa,
+        "nativas": {"opps": len(nat), **dict(C.Counter(o.get("status") for o in nat))},
+        "cohorte_por_mes": cohorte,
+        "perdidas_por_motivo_nativas": dict(motivos_nat.most_common()),
+        "migradas_clientify": {"opps": len(mig), **dict(mig_st), "valor_won": round(sum(val(o) for o in mig if o.get("status") == "won"), 2),
+                               "nota": "Migración parcial: createdAt = día de la migración y estados no confiables; histórico, no comparable"},
+        "llamadas_por_estado": dict(C.Counter(m.get("callStatus") or "sin dato" for m in calls).most_common()),
+        "salientes_por_usuario_mes": {k: dict(v) for k, v in sorted(salientes_usuario_mes.items()) if k},
     }
 
 
@@ -185,9 +237,14 @@ def main():
         s["ticket_prom"] = round(a.monto / a.ventas, 2)
     report(s)
     if a.write:
+        # Completo (interno, gitignored) → lo lee data/build.py para el PDF
+        (d / "summary.json").write_text(json.dumps(s, ensure_ascii=False, indent=1))
+        # Público (snapshot del repo): solo agregados sin hallazgos internos (sin etapas ni motivos)
+        pub = {k: s[k] for k in PUBLICO if k in s}
+        pub["alcance"] = "Pipeline GHL completo al corte (nueva línea base; no comparable con snapshots de Clientify)"
         out = SNAP / f"pipeline_{a.corte.strftime('%Y-%m')}.json"
-        out.write_text(json.dumps(s, ensure_ascii=False, indent=1))
-        print(f"\nEscrito {out}")
+        out.write_text(json.dumps(pub, ensure_ascii=False, indent=1))
+        print(f"\nEscrito {d / 'summary.json'} (interno) y {out} (público)")
 
 
 if __name__ == "__main__":

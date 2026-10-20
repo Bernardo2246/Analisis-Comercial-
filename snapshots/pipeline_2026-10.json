@@ -1,15 +1,79 @@
 {
- "corte": "2026-10-14",
- "fuente": "Tablero Master Metrics de SRM sobre Go High Level (transcripción en ghl/raw/mastermetrics_Q3-2026.md) (PRELIMINAR — se reemplaza por la exportación vía API cuando haya acceso Admin a GHL) + Excel de ventas",
- "alcance_crm": "SOLO oportunidades creadas jul–sep 2026 (no comparable 1:1 con el snapshot 2026-07)",
+ "corte": "2026-10-20",
+ "fuente": "API Go High Level (extracción 2026-10-20) + Excel de ventas",
  "ventas_cerradas": 233,
  "monto_vendido": 15855823.17,
  "ticket_prom": 68050.74,
- "crm_opps_total": 200,
- "crm_ganadas": 19,
- "opps_abiertas": 87,
- "pct_cierre_crm": 0.095,
- "pipeline_abierto_bruto": 15037131,
- "valor_gestionado": 23721191,
- "nota_pipeline": "Master Metrics; se reemplaza con la exportación GHL (ghl/summarize.py --write)"
+ "crm_opps_total": 2019,
+ "crm_ganadas": 146,
+ "crm_perdidas": 1727,
+ "opps_abiertas": 146,
+ "pct_cierre_crm": 0.0723,
+ "pipeline_abierto_bruto": 22139541.95,
+ "contactos_total": 4167,
+ "actividades_por_mes": {
+  "2026-07": {
+   "whatsapp": 10,
+   "whatsapp_salientes": 4,
+   "sms": 1,
+   "sms_salientes": 1,
+   "llamadas": 1,
+   "opps_creadas": 1801,
+   "opps_ganadas": 111
+  },
+  "2026-08": {
+   "whatsapp": 3129,
+   "whatsapp_salientes": 1524,
+   "email": 15,
+   "email_salientes": 5,
+   "llamadas": 66,
+   "llamadas_salientes": 44,
+   "sms": 10,
+   "sms_salientes": 10,
+   "tareas_creadas": 361,
+   "tareas_completadas": 221,
+   "citas": 1,
+   "opps_creadas": 81
+  },
+  "2026-09": {
+   "whatsapp": 3000,
+   "whatsapp_salientes": 1501,
+   "llamadas": 228,
+   "llamadas_salientes": 175,
+   "email": 17,
+   "email_salientes": 5,
+   "tareas_creadas": 450,
+   "tareas_completadas": 431,
+   "notas": 1,
+   "opps_creadas": 67,
+   "opps_ganadas": 1
+  },
+  "2026-10": {
+   "whatsapp": 2606,
+   "whatsapp_salientes": 1257,
+   "llamadas": 132,
+   "email": 12,
+   "email_salientes": 7,
+   "llamadas_salientes": 79,
+   "tareas_creadas": 307,
+   "tareas_completadas": 285,
+   "opps_creadas": 70,
+   "opps_ganadas": 34
+  }
+ },
+ "nativas": {
+  "opps": 265,
+  "open": 141,
+  "lost": 103,
+  "won": 21
+ },
+ "migradas_clientify": {
+  "opps": 1754,
+  "open": 5,
+  "lost": 1624,
+  "won": 125,
+  "valor_won": 9864083.64,
+  "nota": "Migración parcial: createdAt = día de la migración y estados no confiables; histórico, no comparable"
+ },
+ "alcance": "Pipeline GHL completo al corte (nueva línea base; no comparable con snapshots de Clientify)"
 }

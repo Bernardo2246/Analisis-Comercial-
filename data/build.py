@@ -7,12 +7,12 @@ Una sola fuente para la presentación (index.html) y el reporte PDF (reporte/rep
 Lee:   data/ANALISIS_DE_DATOS_2.0.xlsx (ventas; gitignored)
        data/geo.json                             (coordenadas municipales)
        data/forecast_publicado_2026-07.json       (forecast del trimestre anterior)
-       data/ghl_mastermetrics_2026-10-14.json     (GHL provisional, agregado)
+       data/ghl_mastermetrics_2026-10-14.json     (Google Ads vía Master Metrics; gitignored)
+       ghl/raw/<fecha>/summary.json               (GHL vía API; ghl/summarize.py --write; gitignored)
        data/baseline_clientify_2026-07.json       (actividades y funnel Clientify)
 Escribe:
        data/data.js                 → window.DATA, público (sin cobranza por cliente)
        reporte/data_interno.js      → window.INTERNO, solo PDF (gitignored)
-       snapshots/pipeline_2026-10.json
 
 Todas las reglas de normalización aprobadas por Bernardo en la Fase 0 (2026-10-19)
 viven aquí, en NORMALIZACION, y se documentan en el anexo de calidad de datos del PDF.
@@ -445,6 +445,12 @@ def main():
     mm = json.loads((DATA / "ghl_mastermetrics_2026-10-14.json").read_text())
     base_cf = json.loads((DATA / "baseline_clientify_2026-07.json").read_text())
     previo = json.loads((DATA / "corte_anterior_2026-07.json").read_text())
+    # GHL vía API: resumen completo de la extracción más reciente (ghl/summarize.py --write; gitignored)
+    ghl_dirs = sorted(p for p in (ROOT / "ghl" / "raw").glob("20*") if (p / "summary.json").exists())
+    if not ghl_dirs:
+        raise SystemExit("Falta ghl/raw/<fecha>/summary.json: corre ghl/extract.py y ghl/summarize.py --write")
+    gs = json.loads((ghl_dirs[-1] / "summary.json").read_text())
+    gs_corte = ghl_dirs[-1].name
 
     Q3 = [7, 8, 9]
     q3_26, q3_25 = sel(regs, 2026, Q3), sel(regs, 2025, Q3)
@@ -484,23 +490,34 @@ def main():
     cross = [c for c in cli if c["compras_2025"] and c["compras_2026"]]
     cli_q3 = clientes(q3_26)
 
-    # --- Master Metrics derivadas (calculadas aquí, no las del tablero)
+    # --- GHL: cohorte Q3 (opps nativas creadas jul–sep, estado al corte de la extracción) + Google Ads (Master Metrics)
     ga, dem, ges = mm["google_ads"], mm["demanda"], mm["gestion"]
+    coh = [gs["cohorte_por_mes"].get(f"2026-{m:02d}", {}) for m in Q3]
+    q3c = {k: round(sum(c.get(k, 0) for c in coh), 2) for k in ("opps", "valor", "open", "won", "lost", "valor_won")}
+    q3c.update(por_mes={f"2026-{m:02d}": c.get("opps", 0) for m, c in zip(Q3, coh)})
+    act_keys = ("whatsapp", "whatsapp_salientes", "llamadas", "llamadas_salientes", "email", "email_salientes",
+                "tareas_creadas", "tareas_completadas")
+    api = dict(corte=gs_corte, fuente=f"API Go High Level (extracción {gs_corte})", q3=q3c,
+               pipeline_abierto=dict(opps=gs["opps_abiertas"], valor=gs["pipeline_abierto_bruto"]),
+               actividades={m: {k: v.get(k, 0) for k in act_keys} for m, v in gs["actividades_por_mes"].items() if m >= "2026-07"},
+               llamadas_completadas=gs["llamadas_por_estado"].get("completed", 0),
+               nota="Opps migradas de Clientify excluidas (migración parcial: fecha y estado no confiables)")
     mkt_q3 = tot([r for r in q3_26 if r["canal"] in ("WhatsApp", "Web")])
     crm = dict(
-        corte=mm["corte"], estatus=mm["estatus"],
-        tasa_cierre=round(ges["ganadas"] / dem["opps"], 4),
-        tasa_cierre_resueltas=round(ges["ganadas"] / (dem["opps"] - ges["abiertas"]), 4),
-        pct_abiertas=round(ges["abiertas"] / dem["opps"], 4),
+        corte=gs_corte, estatus="API GHL",
+        tasa_cierre=round(q3c["won"] / q3c["opps"], 4),
+        tasa_cierre_resueltas=round(q3c["won"] / (q3c["won"] + q3c["lost"]), 4),
+        pct_abiertas=round(q3c["open"] / q3c["opps"], 4),
+        mm_ref=dict(corte=mm["corte"], ganadas=ges["ganadas"], abiertas=ges["abiertas"], tasa=round(ges["ganadas"] / dem["opps"], 4)),
         cpl=round(ga["inversion"] / dem["opps"], 2),
         cpl_mes={m: round(ga["inversion_por_mes"][m] / dem["opps_por_mes"][m], 2) for m in ga["inversion_por_mes"]},
         costo_contacto=round(ga["inversion"] / dem["contactos"], 2),
-        costo_venta_crm=round(ga["inversion"] / ges["ganadas"], 2),
+        costo_venta_crm=round(ga["inversion"] / q3c["won"], 2),
         roas_excel=dict(valor=round(mkt_q3["monto"] / ga["inversion"], 2), ventas_whatsapp_web=mkt_q3,
                         nota="ventas WhatsApp (INBOX) + Web del Excel, Q3 2026 ÷ inversión Google Ads Q3"),
         flujo=dict(h1_clientify=dict(opps=base_cf["funnel_2026_h1"]["opps"], meses=6,
                                      ganadas=base_cf["funnel_2026_h1"]["ganadas"], abiertas=base_cf["funnel_2026_h1"]["abiertas"]),
-                   q3_ghl=dict(opps=dem["opps"], meses=3, ganadas=ges["ganadas"], abiertas=ges["abiertas"])),
+                   q3_ghl=dict(opps=q3c["opps"], meses=3, ganadas=q3c["won"], abiertas=q3c["open"])),
     )
     for k in ("h1_clientify", "q3_ghl"):
         f = crm["flujo"][k]
@@ -551,7 +568,7 @@ def main():
     D = dict(
         generado=dt.datetime.now().isoformat(timespec="seconds"), corte=CORTE,
         fuentes=dict(ventas="Excel ANALISIS DE DATOS 2.0 (hojas 2025: jun–dic; 2026: ene–sep)",
-                     ghl=f'{mm["fuente"]} · corte {mm["corte"]} · {mm["estatus"]}',
+                     ghl=f'API Go High Level (extracción {gs_corte}); Google Ads: {mm["fuente"]} · corte {mm["corte"]}',
                      clientify=base_cf["fuente"], forecast=fpub["fuente"]),
         metrics=metrics, serie=serie, proyeccion=proy, forecast=forecast_q4(s26),
         capas_q3=capa,
@@ -564,15 +581,14 @@ def main():
                                  detalle="Laboratorio Central, Gabinete, ubicaciones sin municipio (EDOMEX, CDMX, Guerrero) y localidades por confirmar")),
         ciclo=ciclo_por_servicio(regs),
         # Público: solo lo que usa la presentación. El tablero completo (etapas, pérdidas, ingresos CRM) va a INTERNO.
-        ghl=dict(mm={k: mm[k] for k in ("fuente", "corte", "estatus", "demanda", "google_ads")}
-                 | {"gestion": {k: ges[k] for k in ("periodo", "ganadas", "abiertas", "valor_abiertas")}}, calc=crm),
+        ghl=dict(mm={k: mm[k] for k in ("fuente", "corte", "estatus", "demanda", "google_ads")}, api=api, calc=crm),
         clientify=base_cf,
         equipo=dict(asistente=dict(nombre="Daniela Torres", puesto="Asistente comercial", ingreso="2026-08-17",
                                    funciones=["Seguimiento", "Cotizaciones", "Agenda"])),
         rows=public_rows,
     )
     I = dict(
-        cobranza=cob, corte_anterior=previo, ghl_mm=mm,
+        cobranza=cob, corte_anterior=previo, ghl_mm=mm, ghl=gs,
         snapshot_anterior=json.loads((ROOT / "snapshots" / "pipeline_2026-07.json").read_text()),
         pendientes=[dict(id=r["id"], cliente=r["cliente"], costo=r["costo"], cobrado=r["cobrado"], restante=r["restante"],
                          pago=r["pago"], fecha_cierre=r["fecha_cierre"],
@@ -594,15 +610,7 @@ def main():
     (ROOT / "reporte" / "data_interno.js").write_text("// Generado por data/build.py — INTERNO, no publicar\nwindow.INTERNO = "
                                                       + json.dumps(I, ensure_ascii=False, separators=(",", ":")) + ";\n")
 
-    snap = dict(corte=mm["corte"], fuente=f'{mm["fuente"]} ({mm["estatus"]}) + Excel de ventas',
-                alcance_crm="SOLO oportunidades creadas jul–sep 2026 (no comparable 1:1 con el snapshot 2026-07)",
-                ventas_cerradas=metrics["total"]["ventas"], monto_vendido=metrics["total"]["monto"],
-                ticket_prom=round(metrics["total"]["monto"] / metrics["total"]["ventas"], 2),
-                crm_opps_total=dem["opps"], crm_ganadas=ges["ganadas"], opps_abiertas=ges["abiertas"],
-                pct_cierre_crm=crm["tasa_cierre"], pipeline_abierto_bruto=ges["valor_abiertas"],
-                valor_gestionado=ges["valor_gestionado"],
-                nota_pipeline="Master Metrics; se reemplaza con la exportación GHL (ghl/summarize.py --write)")
-    (ROOT / "snapshots" / "pipeline_2026-10.json").write_text(json.dumps(snap, ensure_ascii=False, indent=1))
+    # El snapshot de pipeline lo escribe ghl/summarize.py --write (fuente: API GHL)
 
     # Auditoría en consola
     print(f"Filas Excel: {len(filas)} → ventas normalizadas: {len(regs)}")

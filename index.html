@@ -213,7 +213,7 @@ function frame(id, { eyebrow, title, sub, chip, chipWarn, body, src }) {
 }
 const kpi = (lbl, val, note, cls = '') => `<div class="card ${cls}"><div class="lbl">${lbl}</div><div class="val">${val}</div>${note ? `<div class="note">${note}</div>` : ''}</div>`;
 const SRC_XLS = 'Excel de ventas (corte 30-sep-2026)';
-const SRC_GHL = `Master Metrics de SRM sobre Go High Level · corte ${F.fecha(D.ghl.mm.corte)} · preliminar`;
+const SRC_GHL = `Google Ads: Master Metrics de SRM · corte ${F.fecha(D.ghl.mm.corte)} · oportunidades: API Go High Level`;
 
 // ---------- Escala de gráficas al lienzo ----------
 const u = () => parseFloat(getComputedStyle(document.documentElement).fontSize) / 10; // px reales por px lógico
@@ -527,7 +527,7 @@ const MM = D.ghl.mm, GC = D.ghl.calc, GA = MM.google_ads, DM = MM.demanda;
 const ymQ3 = ['2026-07', '2026-08', '2026-09'];
 frame('s-demanda', {
   eyebrow: 'Generación de demanda', title: `Google Ads: ${F.K(GA.inversion)} invertidos generaron ${DM.opps} oportunidades`,
-  sub: 'Campañas de Google Ads operadas por SRM', chip: 'PRELIMINAR · CORTE 14-OCT', chipWarn: true,
+  sub: 'Campañas de Google Ads operadas por SRM', chip: `MASTER METRICS · ${F.fecha(D.ghl.mm.corte).toUpperCase()}`,
   src: SRC_GHL,
   body: { cls: 'cols-kpi', html: `
     <div class="stack">
@@ -563,19 +563,19 @@ function drawDemanda() {
 }
 
 // ---------- 11 Del lead a la venta ----------
-const CP = D.capas_q3, G = MM.gestion;
+const CP = D.capas_q3, API = D.ghl.api, Q = API.q3;
 frame('s-funnel', {
   eyebrow: 'Del lead a la venta', title: 'La venta nueva entra por el CRM; la recompra llega directo',
-  sub: 'Funnel en Go High Level y ventas totales del trimestre', chip: 'PRELIMINAR · CORTE 14-OCT', chipWarn: true,
-  src: SRC_GHL + ' · ' + SRC_XLS,
+  sub: 'Funnel en Go High Level y ventas totales del trimestre', chip: `API GHL · CORTE ${F.fecha(API.corte).toUpperCase()}`,
+  src: `API Go High Level (${F.fecha(API.corte)}) · contactos: Master Metrics (${F.fecha(D.ghl.mm.corte)}) · ` + SRC_XLS,
   body: { cls: 'cols-2', html: `
     <div class="card" style="display:flex;flex-direction:column">
       <div class="ct">Funnel GHL · oportunidades creadas jul–sep 2026</div>
       <div class="funnel">
         <div class="fstep"><div class="fbar" style="width:60rem">${DM.contactos}</div><div class="fl"><b>Contactos</b>${DM.contactos_por_fuente.Google} de Google Ads</div></div>
-        <div class="fstep"><div class="fbar" style="width:${60 * DM.opps / DM.contactos}rem;background:${P.steel}">${DM.opps}</div><div class="fl"><b>Oportunidades</b>${F.pct0(DM.opps / DM.contactos)} de los contactos</div></div>
-        <div class="fstep"><div class="fbar" style="width:${Math.max(10, 60 * G.abiertas / DM.contactos)}rem;background:${P.soft}">${G.abiertas}</div><div class="fl"><b>Siguen abiertas</b>${F.pct0(GC.pct_abiertas)} de las oportunidades</div></div>
-        <div class="fstep"><div class="fbar" style="width:10rem;background:${P.goldBright};color:${P.ink}">${G.ganadas}</div><div class="fl"><b>Ganadas</b>tasa de cierre ${F.pct(GC.tasa_cierre)} (${G.ganadas} ÷ ${DM.opps})</div></div>
+        <div class="fstep"><div class="fbar" style="width:${60 * Q.opps / DM.contactos}rem;background:${P.steel}">${Q.opps}</div><div class="fl"><b>Oportunidades</b>${F.pct0(Q.opps / DM.contactos)} de los contactos</div></div>
+        <div class="fstep"><div class="fbar" style="width:${Math.max(10, 60 * Q.open / DM.contactos)}rem;background:${P.soft}">${Q.open}</div><div class="fl"><b>Siguen abiertas</b>${F.pct0(GC.pct_abiertas)} de las oportunidades</div></div>
+        <div class="fstep"><div class="fbar" style="width:10rem;background:${P.goldBright};color:${P.ink}">${Q.won}</div><div class="fl"><b>Ganadas</b>tasa de cierre ${F.pct(GC.tasa_cierre)} (${Q.won} ÷ ${Q.opps})</div></div>
       </div>
       <div class="foot-note" style="margin-top:auto">Mismo flujo que en el 1er semestre en Clientify: <b>${F.n1(GC.flujo.q3_ghl.opps_mes)} opps/mes</b> vs ${F.n1(GC.flujo.h1_clientify.opps_mes)}. La tasa de cierre puede subir: ${F.pct0(GC.pct_abiertas)} siguen abiertas.</div>
     </div>
@@ -585,21 +585,25 @@ frame('s-funnel', {
           <div style="flex:${CP.marketing.monto};background:${P.navy}"><b>${F.M(CP.marketing.monto)}</b>Venta nueva · ${CP.marketing.ventas} ventas</div>
           <div style="flex:${CP.relacion.monto};background:${P.gold}"><b>${F.M(CP.relacion.monto)}</b>Por relación · ${CP.relacion.ventas} ventas</div>
         </div>
-        <div class="note">Venta nueva = WhatsApp, Web, Llamada y Correo · Por relación = recompra y recomendación.</div></div>
-      <div class="card navy grow"><div class="lbl">Recompras y recomendados entran fuera del CRM</div>
-        <div class="note" style="margin-top:1.4rem">Por eso el CRM registra menos ventas que el Excel: la relación con clientes vende sin pasar por el funnel.</div></div>
+        <div class="note"><b style="color:var(--navy)">Recompras y recomendados entran fuera del CRM:</b> la relación con clientes vende sin pasar por el funnel.</div></div>
+      <div class="card navy grow"><div class="lbl">Pipeline abierto en GHL · ${F.fecha(API.corte)}</div><div class="val">${F.M(API.pipeline_abierto.valor)}</div>
+        <div class="note">${API.pipeline_abierto.opps} oportunidades abiertas · nueva línea base del CRM (la migración desde Clientify no permite comparar contra julio)</div></div>
       <div class="card"><div class="lbl">Retorno de Google Ads</div><div class="val sm">${F.x(GC.roas_excel.valor)}</div>
-        <div class="note">Ventas WhatsApp + Web del Excel (${F.M(GC.roas_excel.ventas_whatsapp_web.monto)}) ÷ inversión (${F.K(GA.inversion)}). Se actualiza con la exportación de GHL.</div></div>
+        <div class="note">Ventas WhatsApp + Web del Excel (${F.M(GC.roas_excel.ventas_whatsapp_web.monto)}) ÷ inversión en Google Ads (${F.K(GA.inversion)}).</div></div>
     </div>` }
 });
 
 // ---------- 12 Capacidad comercial ----------
-const AC = D.clientify.actividades_2026_h1, EQ = D.equipo.asistente;
-const actTipos = ['Llamada', 'Correo', 'Reunión/Videollamada', 'Tarea/Otro'];
+const EQ = D.equipo.asistente, AC = D.clientify.actividades_2026_h1;
+const capMeses = ['2026-08', '2026-09', '2026-10'];
+const capLbl = m => m === '2026-10' ? `Oct (al ${+API.corte.slice(8)})` : F.mesLargo(m);
+const capSeries = [['whatsapp_salientes', 'WhatsApp enviados'], ['llamadas_salientes', 'Llamadas realizadas'], ['email_salientes', 'Correos enviados']];
+const AQ = capMeses.slice(0, 2).map(m => API.actividades[m]);
+const salQ3 = AQ.reduce((a, x) => a + x.whatsapp_salientes + x.llamadas_salientes + x.email_salientes, 0) / AQ.length;
 frame('s-capacidad', {
   eyebrow: 'Capacidad comercial', title: `Más estructura: de ${F.n1(M.ventas_mes_h1_26)} a ${F.n1(M.ventas_mes_q3)} ventas por mes`,
-  sub: 'Equipo, actividad comercial y ventas mensuales', chip: 'ENE–SEP 2026',
-  src: 'Clientify (actividades ene–jun) · ' + SRC_XLS,
+  sub: 'Equipo y actividad comercial registrada en Go High Level', chip: 'AGO–OCT 2026',
+  src: `API Go High Level (${F.fecha(API.corte)}) · ` + SRC_XLS,
   body: { cls: 'cols-kpi', html: `
     <div class="stack">
       <div class="card"><div class="lbl">Nueva integrante del equipo</div>
@@ -608,32 +612,30 @@ frame('s-capacidad', {
         <div class="tags">${EQ.funciones.map(f => `<span>${f}</span>`).join('')}</div></div>
       <div class="card navy grow"><div class="lbl">Ritmo de cierre</div><div class="val">${F.n1(M.ventas_mes_q3)}</div>
         <div class="note">ventas por mes en Q3, contra ${F.n1(M.ventas_mes_h1_26)} en el 1er semestre · pico de ${M.ventas_mes_max_2026} en agosto</div></div>
-      <div class="card"><div class="lbl">CRM</div><div class="note" style="margin-top:.8rem;color:var(--text)">Migración a Go High Level: inicia en julio, uso parcial en agosto y <b>completa en septiembre</b>.</div></div>
+      <div class="card"><div class="lbl">Actividad en GHL (ago–sep)</div><div class="val sm">${F.int(salQ3)} / mes</div>
+        <div class="note">mensajes, llamadas y correos enviados · ${F.int((AQ[0].tareas_completadas + AQ[1].tareas_completadas) / 2)} tareas de seguimiento completadas al mes</div></div>
     </div>
     <div class="card chart-card">
-      <div><div class="ct">Actividades registradas por mes (barras) y ventas cerradas (línea)</div>
-        <div class="legend">${actTipos.map((t, i) => `<span><i style="background:${P.seq[i]}"></i>${t}</span>`).join('')}<span><i style="background:${P.goldBright};height:.5rem;vertical-align:.4rem"></i>Ventas cerradas</span></div></div>
+      <div><div class="ct">Interacciones enviadas por mes (barras) y tareas completadas (línea)</div>
+        <div class="legend">${capSeries.map(([, l], i) => `<span><i style="background:${P.seq[i]}"></i>${l}</span>`).join('')}<span><i style="background:${P.goldBright};height:.5rem;vertical-align:.4rem"></i>Tareas completadas</span></div></div>
       <div class="cw"><canvas id="cCap"></canvas></div>
-      <div class="foot-note">Jul–sep sin barras: migración de CRM. Las actividades de Clientify no se pudieron migrar y las de GHL se integran con la exportación de datos (pendiente de acceso Admin). <b>No es una caída de actividad.</b></div>
+      <div class="foot-note">Julio: migración de CRM (las actividades de Clientify no se migraron). Ene–jun en Clientify se registraban a mano (~${F.int(AC.total / 6)}/mes, sobre todo llamadas); GHL registra cada mensaje automáticamente, así que las cifras <b>no son comparables</b> entre sistemas.</div>
     </div>` }
 });
 function drawCapacidad() {
-  const labels = s26.map(p => F.mes(p.ym));
-  const ds = actTipos.map((t, i) => ({ type: 'bar', label: t, data: s26.map((p, k) => { const r = AC.por_mes.find(x => x.m === k + 1); return r ? r[t] || 0 : null; }),
-    backgroundColor: P.seq[i], stack: 'a', yAxisID: 'y', barPercentage: .6, order: 2 }));
-  ds.push({ type: 'line', label: 'Ventas cerradas', data: s26.map(p => p.ventas), borderColor: P.goldBright, backgroundColor: P.goldBright, borderWidth: fs(4), pointRadius: fs(6), yAxisID: 'y2', order: 1 });
-  mk('cCap', { data: { labels, datasets: ds },
-    options: baseOpts({ layout: { padding: { top: fs(26) } },
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.raw == null ? '' : `${c.dataset.label}: ${c.raw}` } } },
-      scales: { y: { stacked: true, min: 0, max: 320, title: { display: true, text: 'Actividades', font: { size: fs(15) }, color: P.muted }, ticks: { font: { size: fs(15) }, color: P.muted }, grid: { color: P.grid }, border: { display: false } },
-                y2: { min: 0, max: 32, position: 'right', title: { display: true, text: 'Ventas', font: { size: fs(15) }, color: P.muted }, ticks: { font: { size: fs(15) }, color: P.muted }, grid: { display: false }, border: { display: false } },
-                x: { stacked: true, ...axisX(19) } } }),
-    plugins: [valueLabels((v, i, di) => di === 4 ? String(v) : '', P.gold, 17, [4]), {
-      id: 'migr', afterDatasetsDraw(c) { const { ctx, chartArea: a, scales: { x } } = c; const x0 = x.getPixelForValue(6) - x.width / 18, x1 = x.getPixelForValue(8) + x.width / 18;
-        ctx.save(); ctx.fillStyle = 'rgba(184,197,214,.18)'; ctx.fillRect(x0, a.top, x1 - x0, a.bottom - a.top);
-        ctx.fillStyle = P.muted; ctx.font = `700 ${fs(17)}px -apple-system, Segoe UI, sans-serif`; ctx.textAlign = 'center';
-        ctx.fillText('Migración de CRM', (x0 + x1) / 2, a.top + fs(70)); ctx.font = `${fs(15)}px -apple-system, Segoe UI, sans-serif`;
-        ctx.fillText('actividades GHL pendientes', (x0 + x1) / 2, a.top + fs(94)); ctx.restore(); } }] });
+  const ds = capSeries.map(([k, l], i) => ({ type: 'bar', label: l, data: capMeses.map(m => API.actividades[m][k]), backgroundColor: P.seq[i], stack: 'a', yAxisID: 'y', barPercentage: .55, order: 2 }));
+  ds.push({ type: 'line', label: 'Tareas completadas', data: capMeses.map(m => API.actividades[m].tareas_completadas), borderColor: P.goldBright, backgroundColor: P.goldBright, borderWidth: fs(4), pointRadius: fs(7), yAxisID: 'y', order: 1 });
+  mk('cCap', { data: { labels: capMeses.map(capLbl), datasets: ds },
+    options: baseOpts({ layout: { padding: { top: fs(30) } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.dataset.label}: ${F.int(c.raw)}` } } },
+      scales: { y: { stacked: true, min: 0, max: 2000, ticks: { font: { size: fs(16) }, color: P.muted, callback: v => F.int(v) }, grid: { color: P.grid }, border: { display: false } },
+                x: { stacked: true, ...axisX(21) } } }),
+    plugins: [{ id: 'tot', afterDatasetsDraw(c) { const { ctx } = c; ctx.save(); ctx.font = `700 ${fs(19)}px -apple-system, Segoe UI, sans-serif`; ctx.fillStyle = P.ink; ctx.textAlign = 'center';
+      const top = c.getDatasetMeta(capSeries.length - 1).data;
+      capMeses.forEach((m, i) => { const a = API.actividades[m]; ctx.fillText(F.int(a.whatsapp_salientes + a.llamadas_salientes + a.email_salientes), top[i].x, top[i].y - fs(12)); });
+      ctx.fillStyle = P.gold; ctx.font = `700 ${fs(17)}px -apple-system, Segoe UI, sans-serif`;
+      c.getDatasetMeta(capSeries.length).data.forEach((el, i) => ctx.fillText(F.int(API.actividades[capMeses[i]].tareas_completadas), el.x, el.y - fs(16)));
+      ctx.restore(); } }] });
 }
 
 // ---------- 13 Explorador ----------
@@ -681,7 +683,7 @@ frame('s-cierre', {
       <div class="card"><div class="lbl">Lo que logramos</div><div class="val md">${F.M(M.q3_26.monto)}</div>
         <div class="note" style="color:var(--text);font-size:2.5rem;line-height:1.7;margin-top:2.4rem">• ${F.signPct(PR.pct_opt)} sobre la proyección optimista<br>• ${F.signPct(M.yoy_monto, 0)} contra Q3 2025<br>• ${F.pct0(M.rel_q3_26.pct_ventas)} de las ventas por recompra o recomendación</div></div>
       <div class="card"><div class="lbl">Lo que construimos</div><div class="val md">Estructura</div>
-        <div class="note" style="color:var(--text);font-size:2.5rem;line-height:1.7;margin-top:2.4rem">• ${EQ.nombre}, ${EQ.puesto.toLowerCase()} desde agosto<br>• CRM Go High Level operando completo desde septiembre<br>• Google Ads medible: ${F.mxn(GC.cpl)} por oportunidad</div></div>
+        <div class="note" style="color:var(--text);font-size:2.5rem;line-height:1.7;margin-top:2.4rem">• ${EQ.nombre}, ${EQ.puesto.toLowerCase()} desde agosto<br>• CRM Go High Level operando completo: ${F.M(D.ghl.api.pipeline_abierto.valor)} de pipeline abierto<br>• Google Ads medible: ${F.mxn(GC.cpl)} por oportunidad</div></div>
       <div class="card navy"><div class="lbl">Lo que sigue · Q4 2026</div><div class="val md">${F.M(FC.q4.base)}</div>
         <div class="note" style="font-size:2.5rem;line-height:1.7;margin-top:2.4rem">Escenario base con la tendencia de 2026 (rango ${F.M(FC.q4.pesimista)} – ${F.M(FC.q4.optimista)}), con el equipo completo y GHL al 100%.</div></div>
     </div>

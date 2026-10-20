@@ -19,3 +19,4 @@ capturas_q3/
 # Datos internos de GHL y prompt de trabajo del trimestre (contienen hallazgos solo-PDF)
 data/ghl_mastermetrics_*.json
 PROMPT_Q3-2026.md
+ghl/lost_reasons.json

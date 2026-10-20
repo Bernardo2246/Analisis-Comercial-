@@ -65,6 +65,8 @@ class GHLClient:
             "Authorization": f"Bearer {self.token}",
             "Version": version or self.version,
             "Accept": "application/json",
+            # Cloudflare (error 1010) bloquea el User-Agent por defecto de urllib
+            "User-Agent": "IntegraAnalisisComercial/1.0 (+ghl/client.py)",
         }
         if data is not None:
             headers["Content-Type"] = "application/json"
